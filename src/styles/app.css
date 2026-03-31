@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+/*
+ * ── Typography system ────────────────────────────────────────────────
+ *
+ *  Display  →  DM Serif Display  (organic serif, reinforces green/nature brand)
+ *  UI/Body  →  Inter             (industry standard for data dashboards)
+ *
+ *  Why Inter?
+ *    • Designed specifically for screen readability at small sizes
+ *    • Ships with tabular-nums OpenType feature — critical for aligned data columns
+ *    • Cross-platform consistent (unlike Bahnschrift / Trebuchet MS)
+ *    • Used by GitHub, Linear, Vercel, Figma, Stripe — the de-facto dashboard standard
+ *
+ *  Why DM Serif Display?
+ *    • High-contrast bracketed serifs give headings visual authority
+ *    • Italic variant adds personality without a second typeface
+ *    • Pairs naturally with Inter (geometric-neutral UI vs editorial display)
+ *    • Reinforces the organic / agricultural brand identity
+ */
+
+/* ── CSS custom properties: type scale ─────────────────────────────── */
+:root {
+  /* Fonts */
+  --font-display: "DM Serif Display", Georgia, serif;
+  --font-ui:      "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /*
+   * Modular type scale (ratio ≈ 1.25 — Major Third)
+   * Keeps every size intentional and harmonically related.
+   */
+  --text-2xs:  0.625rem;   /* 10px — overline / badge labels          */
+  --text-xs:   0.75rem;    /* 12px — captions, meta, table headers     */
+  --text-sm:   0.875rem;   /* 14px — body, inputs, table rows          */
+  --text-base: 1rem;       /* 16px — default prose                     */
+  --text-lg:   1.125rem;   /* 18px — card titles                       */
+  --text-xl:   1.25rem;    /* 20px — section headings                  */
+  --text-2xl:  1.5rem;     /* 24px — page h1                           */
+  --text-3xl:  1.875rem;   /* 30px — hero / login headline             */
+
+  /* Line heights */
+  --leading-tight:   1.2;
+  --leading-snug:    1.375;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.625;
+
+  /* Letter spacing */
+  --tracking-tight:    -0.01em;
+  --tracking-normal:    0;
+  --tracking-wide:      0.04em;
+  --tracking-overline:  0.12em;   /* used on uppercase micro-labels */
+}
+
+/* ── Font utilities ─────────────────────────────────────────────────── */
+@layer utilities {
+  /* Display / heading typeface */
+  .font-display {
+    font-family: var(--font-display);
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  /* UI / body typeface */
+  .font-ui {
+    font-family: var(--font-ui);
+    font-feature-settings: "kern" 1, "liga" 1, "cv11" 1, "ss01" 1;
+  }
+
+  /*
+   * Tabular numbers — CRITICAL for data dashboards.
+   * Ensures digits align vertically in weight/count columns.
+   * Inter ships this feature natively.
+   */
+  .font-tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /*
+   * Overline label — the repeated "text-[0.6rem] uppercase tracking-[0.14em]"
+   * pattern unified into one composable utility.
+   * Usage: <p className="text-overline text-emerald-600">Overview</p>
+   */
+  .text-overline {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-overline);
+    text-transform: uppercase;
+  }
+}
+
+/* ── Global base ────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, #root { height: 100%; margin: 0; }
+
+  html {
+    /* Subpixel antialiasing on all platforms */
+    -webkit-font-smoothing:  antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: var(--font-ui);
+    font-size:   var(--text-sm);        /* 14px base — standard for dense dashboards */
+    line-height: var(--leading-normal);
+    color: #10231c;
+    overflow: hidden;
+    background-color: #edf4eb;
+    background-image:
+      radial-gradient(circle at 8% 10%, rgba(226, 205, 112, 0.38), transparent 28%),
+      radial-gradient(circle at 88% 8%,  rgba(111, 164, 121, 0.18), transparent 24%),
+      radial-gradient(circle at 78% 88%, rgba(86,  152, 106, 0.10), transparent 22%);
+  }
+
+  /*
+   * Inherit font into form controls (browser default overrides this).
+   * Also apply tabular-nums to all numeric inputs for alignment.
+   */
+  button, input, select, textarea {
+    font: inherit;
+    cursor: pointer;
+  }
+  input, textarea { cursor: text; }
+
+  /* Numbers in inputs should always align */
+  input[type="number"],
+  input[inputmode="numeric"],
+  input[inputmode="decimal"] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+}
+
+/* ── Custom animations ──────────────────────────────────────────────── */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes live-pulse {
+  0%   { box-shadow: 0 0 0 0   rgba(16, 185, 129, 0.55); }
+  70%  { box-shadow: 0 0 0 9px rgba(16, 185, 129, 0);    }
+  100% { box-shadow: 0 0 0 0   rgba(16, 185, 129, 0);    }
+}
+
+@keyframes warn-pulse {
+  0%   { box-shadow: 0 0 0 0   rgba(245, 158, 11, 0.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(245, 158, 11, 0);    }
+  100% { box-shadow: 0 0 0 0   rgba(245, 158, 11, 0);    }
+}
+
+@layer utilities {
+  .animate-rise      { animation: rise-in    0.38s ease both; }
+  .animate-live-dot  { animation: live-pulse 2s    infinite;  }
+  .animate-warn-dot  { animation: warn-pulse 1.4s  infinite;  }
+}
