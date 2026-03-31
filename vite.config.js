@@ -8,11 +8,11 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://68.178.166.190:4125",
+        target: "https://backend-andaradeniya-dashboard.vercel.app",
         changeOrigin: true,
       },
       "/ws": {
-        target: "ws://68.178.166.190:4125",
+        target: "https://backend-andaradeniya-dashboard.vercel.app",
         ws: true,
       },
     },
