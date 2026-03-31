@@ -118,7 +118,7 @@ export function useDashboardViewModel() {
   useEffect(() => {
     const interval = setInterval(() => {
       loadSummaryRef.current(latestFiltersRef.current, { silent: true });
-    }, 30000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);

@@ -251,7 +251,7 @@ export function useLeafCollectionViewModel() {
         latestFiltersRef.current,
         { silent: true },
       );
-    }, 30000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
