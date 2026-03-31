@@ -1,6 +1,5 @@
 import { startTransition, useEffect, useRef, useState } from "react";
 import {
-  createLeafCollectionSocket,
   fetchFactories,
   fetchFactorySummaries,
   fetchLeafCollectionFilters,
@@ -115,22 +114,13 @@ export function useDashboardViewModel() {
     return undefined;
   }, [filters.month, filters.day]);
 
-  // WebSocket: refresh silently when any factory updates
+  // Polling: refresh silently every 30 seconds
   useEffect(() => {
-    const socket = createLeafCollectionSocket("all-factories");
+    const interval = setInterval(() => {
+      loadSummaryRef.current(latestFiltersRef.current, { silent: true });
+    }, 30000);
 
-    socket.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data);
-        if (message.type === "dashboard.updated") {
-          loadSummaryRef.current(latestFiltersRef.current, { silent: true });
-        }
-      } catch (_) {
-        // ignore
-      }
-    };
-
-    return () => socket.close();
+    return () => clearInterval(interval);
   }, []);
 
   function updateFilter(field, value) {

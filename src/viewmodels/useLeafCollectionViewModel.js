@@ -1,6 +1,5 @@
 import { startTransition, useEffect, useRef, useState } from "react";
 import {
-  createLeafCollectionSocket,
   fetchFactories,
   fetchLeafCollectionDashboard,
   fetchLeafCollectionFilters,
@@ -244,45 +243,19 @@ export function useLeafCollectionViewModel() {
       return undefined;
     }
 
-    const socket = createLeafCollectionSocket(selectedFactoryId);
-    setSocketState("connecting");
+    setSocketState("live");
 
-    socket.onopen = () => {
-      setSocketState("live");
-    };
-
-    socket.onerror = () => {
-      setSocketState("error");
-    };
-
-    socket.onclose = () => {
-      setSocketState("disconnected");
-    };
-
-    socket.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data);
-
-        if (
-          message.type === "dashboard.updated" &&
-          (
-            selectedFactoryRef.current === "all-factories" ||
-            message.factoryId === selectedFactoryRef.current
-          )
-        ) {
-          loadDashboardRef.current(
-            selectedFactoryRef.current,
-            latestFiltersRef.current,
-            { silent: true },
-          );
-        }
-      } catch (error) {
-        console.error("Invalid WebSocket message received.", error);
-      }
-    };
+    const interval = setInterval(() => {
+      loadDashboardRef.current(
+        selectedFactoryRef.current,
+        latestFiltersRef.current,
+        { silent: true },
+      );
+    }, 30000);
 
     return () => {
-      socket.close();
+      clearInterval(interval);
+      setSocketState("disconnected");
     };
   }, [selectedFactoryId]);
 
