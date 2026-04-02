@@ -112,6 +112,7 @@ export function useDashboardViewModel() {
     if (!filters.month || !filters.day) return undefined;
     loadSummaryRef.current(filters);
     return undefined;
+    // sula hu huuuu
   }, [filters.month, filters.day]);
 
   // Polling: refresh silently every 30 seconds
