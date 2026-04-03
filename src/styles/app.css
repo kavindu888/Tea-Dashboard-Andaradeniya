@@ -156,3 +156,20 @@
   .animate-live-dot  { animation: live-pulse 2s    infinite;  }
   .animate-warn-dot  { animation: warn-pulse 1.4s  infinite;  }
 }
+
+/* ── Report / PDF capture styles ──────────────────────────────────────────── */
+@layer utilities {
+  /*
+   * Applied to each report root div.
+   * Ensures html2canvas always sees a white background,
+   * and that backdrop-filter / transparency don't bleed into the PDF.
+   */
+  .report-page {
+    background:      #ffffff;
+    color:           #1e293b;
+    font-family:     var(--font-ui);
+    padding:         2rem;
+    width:           100%;
+    box-sizing:      border-box;
+  }
+}
